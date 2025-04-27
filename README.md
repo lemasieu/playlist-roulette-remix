@@ -55,4 +55,4 @@ This project is built with:
 
 Demo: https://playlist-roulette-remix.lovable.app/
 
-/This file has a litte edit by me/
+/This file has a little edit by me/
