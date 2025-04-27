@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { play } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { extractVideoId } from '@/utils/youtubeUtils';
 import { toast } from 'sonner';
 
@@ -19,7 +18,6 @@ const Index = () => {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
 
   const handleUrlsUploaded = (newUrls: string[]) => {
-    // If we have more than required songs, truncate the list
     const finalUrls = newUrls.slice(0, REQUIRED_SONG_COUNT);
     setUrls(finalUrls);
     
@@ -31,18 +29,16 @@ const Index = () => {
   };
 
   const spinRoulette = () => {
-    if (urls.length < REQUIRED_SONG_COUNT) {
-      toast.error(`You need exactly ${REQUIRED_SONG_COUNT} videos to play the game!`);
+    if (urls.length < 2) {
+      toast.error("You need at least 2 videos to play!");
       return;
     }
 
-    // Clear previous selection
     setSelectedVideoId(null);
     setSelectedIndex(null);
     setIsSpinning(true);
 
     setTimeout(() => {
-      // Select a random video from the playlist
       const randomIndex = Math.floor(Math.random() * urls.length);
       const selectedUrl = urls[randomIndex];
       const videoId = extractVideoId(selectedUrl);
@@ -53,9 +49,9 @@ const Index = () => {
       if (videoId) {
         setTimeout(() => {
           setSelectedVideoId(videoId);
-        }, 1000); // Delay video loading for dramatic effect
+        }, 1000);
       }
-    }, 5000); // Spin animation duration
+    }, 5000);
   };
 
   return (
@@ -65,7 +61,7 @@ const Index = () => {
           YouTube Playlist Roulette
         </h1>
         <p className="text-gray-400">
-          Add 6 YouTube videos (one should be a "bad" one). Spin the cylinder and test your luck!
+          Add YouTube videos (at least 2) and test your luck!
         </p>
       </header>
 
@@ -90,7 +86,7 @@ const Index = () => {
                   flex items-center gap-2
                 `}
               >
-                <play size={24} />
+                <Play size={24} />
                 {isSpinning ? "Spinning..." : "Spin & Play"}
               </Button>
             </div>

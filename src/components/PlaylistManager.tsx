@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Download } from 'lucide-react';
 import { extractVideoId, isValidYoutubeUrl } from '@/utils/youtubeUtils';
 import { toast } from 'sonner';
 
@@ -43,9 +42,35 @@ const PlaylistManager: React.FC<PlaylistManagerProps> = ({ urls, onUrlsChange })
     }
   };
 
+  const handleDownload = () => {
+    const content = urls.join('\n');
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'playlist.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    toast.success("Playlist downloaded successfully");
+  };
+
   return (
     <div className="w-full">
-      <h2 className="text-xl font-bold mb-4">Playlist</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">Playlist</h2>
+        {urls.length > 0 && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleDownload}
+            className="text-neon-purple hover:bg-neon-purple/20"
+          >
+            <Download size={18} />
+          </Button>
+        )}
+      </div>
       
       <div className="flex gap-2 mb-4">
         <Input
