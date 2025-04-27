@@ -2,17 +2,8 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/c543717e-9f07-425d-9abc-8907cce7fe99
-
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/c543717e-9f07-425d-9abc-8907cce7fe99) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+YouTube Playlist Russian Roulette
+(Playlist Youtube style cò quay Nga)
 
 **Use your preferred IDE**
 
@@ -62,12 +53,6 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/c543717e-9f07-425d-9abc-8907cce7fe99) and click on Share -> Publish.
+Demo: https://playlist-roulette-remix.lovable.app/
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+/This file has a litte edit by me/
