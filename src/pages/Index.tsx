@@ -1,12 +1,118 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { play } from 'lucide-react';
+import { extractVideoId } from '@/utils/youtubeUtils';
+import { toast } from 'sonner';
+
+import FileUpload from '@/components/FileUpload';
+import PlaylistManager from '@/components/PlaylistManager';
+import Cylinder from '@/components/Cylinder';
+import YoutubePlayer from '@/components/YoutubePlayer';
+
+const REQUIRED_SONG_COUNT = 6;
 
 const Index = () => {
+  const [urls, setUrls] = useState<string[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+
+  const handleUrlsUploaded = (newUrls: string[]) => {
+    // If we have more than required songs, truncate the list
+    const finalUrls = newUrls.slice(0, REQUIRED_SONG_COUNT);
+    setUrls(finalUrls);
+    
+    if (finalUrls.length < REQUIRED_SONG_COUNT) {
+      toast.warning(`Added ${finalUrls.length} videos. You need ${REQUIRED_SONG_COUNT} for the game.`);
+    } else {
+      toast.success(`Playlist loaded with ${finalUrls.length} videos!`);
+    }
+  };
+
+  const spinRoulette = () => {
+    if (urls.length < REQUIRED_SONG_COUNT) {
+      toast.error(`You need exactly ${REQUIRED_SONG_COUNT} videos to play the game!`);
+      return;
+    }
+
+    // Clear previous selection
+    setSelectedVideoId(null);
+    setSelectedIndex(null);
+    setIsSpinning(true);
+
+    setTimeout(() => {
+      // Select a random video from the playlist
+      const randomIndex = Math.floor(Math.random() * urls.length);
+      const selectedUrl = urls[randomIndex];
+      const videoId = extractVideoId(selectedUrl);
+
+      setSelectedIndex(randomIndex);
+      setIsSpinning(false);
+      
+      if (videoId) {
+        setTimeout(() => {
+          setSelectedVideoId(videoId);
+        }, 1000); // Delay video loading for dramatic effect
+      }
+    }, 5000); // Spin animation duration
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-black to-roulette-dark text-white p-6">
+      <header className="max-w-4xl mx-auto text-center mb-8">
+        <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-neon-red to-neon-purple bg-clip-text text-transparent">
+          YouTube Playlist Roulette
+        </h1>
+        <p className="text-gray-400">
+          Add 6 YouTube videos (one should be a "bad" one). Spin the cylinder and test your luck!
+        </p>
+      </header>
+
+      <main className="max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="flex flex-col">
+            <FileUpload onUrlsUploaded={handleUrlsUploaded} />
+            
+            <PlaylistManager 
+              urls={urls} 
+              onUrlsChange={setUrls} 
+            />
+            
+            <div className="mt-6 flex justify-center">
+              <Button 
+                onClick={spinRoulette}
+                disabled={urls.length !== REQUIRED_SONG_COUNT || isSpinning}
+                className={`
+                  px-8 py-6 text-xl font-bold rounded-full shadow-lg
+                  ${isSpinning ? 'bg-gray-700' : 'bg-neon-red hover:bg-red-600'}
+                  transition-all duration-300 transform hover:scale-105
+                  flex items-center gap-2
+                `}
+              >
+                <play size={24} />
+                {isSpinning ? "Spinning..." : "Spin & Play"}
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex flex-col">
+            <Cylinder 
+              isSpinning={isSpinning} 
+              selectedIndex={selectedIndex} 
+              songCount={REQUIRED_SONG_COUNT}
+            />
+            
+            <div className="mt-4">
+              <YoutubePlayer videoId={selectedVideoId} />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer className="max-w-4xl mx-auto mt-12 text-center text-gray-500 text-sm">
+        <p>YouTube Playlist Roulette &copy; {new Date().getFullYear()}</p>
+      </footer>
     </div>
   );
 };
