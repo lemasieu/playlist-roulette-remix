@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
@@ -9,7 +10,7 @@ import PlaylistManager from '@/components/PlaylistManager';
 import Cylinder from '@/components/Cylinder';
 import YoutubePlayer from '@/components/YoutubePlayer';
 
-const REQUIRED_SONG_COUNT = 6;
+const MINIMUM_SONG_COUNT = 2;
 
 const Index = () => {
   const [urls, setUrls] = useState<string[]>([]);
@@ -18,19 +19,18 @@ const Index = () => {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
 
   const handleUrlsUploaded = (newUrls: string[]) => {
-    const finalUrls = newUrls.slice(0, REQUIRED_SONG_COUNT);
-    setUrls(finalUrls);
+    setUrls(newUrls);
     
-    if (finalUrls.length < REQUIRED_SONG_COUNT) {
-      toast.warning(`Added ${finalUrls.length} videos. You need ${REQUIRED_SONG_COUNT} for the game.`);
+    if (newUrls.length < MINIMUM_SONG_COUNT) {
+      toast.warning(`Added ${newUrls.length} videos. You need at least ${MINIMUM_SONG_COUNT} for the game.`);
     } else {
-      toast.success(`Playlist loaded with ${finalUrls.length} videos!`);
+      toast.success(`Playlist loaded with ${newUrls.length} videos!`);
     }
   };
 
   const spinRoulette = () => {
-    if (urls.length < 2) {
-      toast.error("You need at least 2 videos to play!");
+    if (urls.length < MINIMUM_SONG_COUNT) {
+      toast.error(`You need at least ${MINIMUM_SONG_COUNT} videos to play!`);
       return;
     }
 
@@ -61,7 +61,7 @@ const Index = () => {
           YouTube Playlist Roulette
         </h1>
         <p className="text-gray-400">
-          Add YouTube videos (at least 2) and test your luck!
+          Add YouTube videos (at least {MINIMUM_SONG_COUNT}) and test your luck!
         </p>
       </header>
 
@@ -78,7 +78,7 @@ const Index = () => {
             <div className="mt-6 flex justify-center">
               <Button 
                 onClick={spinRoulette}
-                disabled={urls.length !== REQUIRED_SONG_COUNT || isSpinning}
+                disabled={urls.length < MINIMUM_SONG_COUNT || isSpinning}
                 className={`
                   px-8 py-6 text-xl font-bold rounded-full shadow-lg
                   ${isSpinning ? 'bg-gray-700' : 'bg-neon-red hover:bg-red-600'}
@@ -96,7 +96,7 @@ const Index = () => {
             <Cylinder 
               isSpinning={isSpinning} 
               selectedIndex={selectedIndex} 
-              songCount={REQUIRED_SONG_COUNT}
+              songCount={urls.length || MINIMUM_SONG_COUNT}
             />
             
             <div className="mt-4">
